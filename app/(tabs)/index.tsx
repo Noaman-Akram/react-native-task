@@ -13,6 +13,7 @@ import {
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
+import TaskItem, { Task as TaskType } from '../../components/TaskItem';
 
 interface Task {
   id: string;
@@ -21,7 +22,7 @@ interface Task {
 }
 
 export default function TasksScreen() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<TaskType[]>([]);
   const [newTask, setNewTask] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -99,29 +100,12 @@ export default function TasksScreen() {
             </Card>
           ) : (
             tasks.map((task) => (
-              <Card key={task.id} style={styles.taskCard}>
-                <Card.Content>
-                  <View style={styles.taskRow}>
-                    <Checkbox
-                      status={task.completed ? 'checked' : 'unchecked'}
-                      onPress={() => toggleTask(task.id)}
-                    />
-                    <Text
-                      style={[
-                        styles.taskText,
-                        task.completed && styles.completedTask,
-                      ]}
-                    >
-                      {task.text}
-                    </Text>
-                    <IconButton
-                      icon="delete"
-                      size={20}
-                      onPress={() => confirmDeleteTask(task.id)}
-                    />
-                  </View>
-                </Card.Content>
-              </Card>
+              <TaskItem
+                key={task.id}
+                task={task}
+                onToggle={() => toggleTask(task.id)}
+                onDelete={() => confirmDeleteTask(task.id)}
+              />
             ))
           )}
         </ScrollView>
