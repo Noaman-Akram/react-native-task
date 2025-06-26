@@ -63,7 +63,9 @@ Even for small apps, I prefer a modular, scalable structure that makes the code 
 - Built with **Expo** using **TypeScript**
 - Started with basic folder and file setup
 - Implemented core features and user flow
-- Added UI polish using libraries for a clean, modern feel
+- Enahnced UI using libraries for a cleaner feel
+- Refactored the code and made it reusable by creating components
+
 
 
 
