@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import {
   Appbar,
@@ -8,9 +8,11 @@ import {
   Button,
   Checkbox,
   IconButton,
-  Divider,
+  Dialog,
+  Portal,
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 interface Task {
   id: string;
@@ -21,6 +23,7 @@ interface Task {
 export default function TasksScreen() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState('');
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const addTask = () => {
     if (newTask.trim()) {
@@ -31,17 +34,27 @@ export default function TasksScreen() {
       };
       setTasks([...tasks, task]);
       setNewTask('');
+      showMessage({ message: 'Task added', type: 'success', icon: 'success', duration: 1200 });
     }
   };
 
   const toggleTask = (id: string) => {
-    setTasks(tasks.map(task => 
+    setTasks(tasks.map(task =>
       task.id === id ? { ...task, completed: !task.completed } : task
     ));
+    showMessage({ message: 'Task completed', type: 'info', icon: 'info', duration: 1200 });
   };
 
-  const deleteTask = (id: string) => {
-    setTasks(tasks.filter(task => task.id !== id));
+  const confirmDeleteTask = (id: string) => {
+    setDeleteId(id);
+  };
+
+  const handleDelete = () => {
+    if (deleteId) {
+      setTasks(tasks.filter(task => task.id !== deleteId));
+      showMessage({ message: 'Task deleted', type: 'danger', icon: 'danger', duration: 1200 });
+      setDeleteId(null);
+    }
   };
 
   return (
@@ -51,6 +64,11 @@ export default function TasksScreen() {
       </Appbar.Header>
 
       <View style={styles.content}>
+        <View style={{ alignItems: 'center', marginBottom: 16 }}>
+          <Text style={{ fontSize: 22, fontWeight: 'bold', color: 'black' }}>Hey</Text>
+          <Text style={{ color: '#64748b', fontSize: 15, marginTop: 2 }}>by Noeman for Chapterone task.</Text>
+        </View>
+
         <Card style={styles.inputCard}>
           <Card.Content>
             <TextInput
@@ -99,7 +117,7 @@ export default function TasksScreen() {
                     <IconButton
                       icon="delete"
                       size={20}
-                      onPress={() => deleteTask(task.id)}
+                      onPress={() => confirmDeleteTask(task.id)}
                     />
                   </View>
                 </Card.Content>
@@ -108,6 +126,23 @@ export default function TasksScreen() {
           )}
         </ScrollView>
       </View>
+
+      {/* Delete Confirmation Dialog */}
+      <Portal>
+        <Dialog visible={!!deleteId} onDismiss={() => setDeleteId(null)}>
+          <Dialog.Title>Delete Task</Dialog.Title>
+          <Dialog.Content>
+            <Text>Are you sure you want to delete this task?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setDeleteId(null)}>Cancel</Button>
+            <Button onPress={handleDelete} textColor="#ef4444">Delete</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      {/* Flash Message for feedback */}
+      <FlashMessage position="top" />
     </SafeAreaView>
   );
 }
