@@ -14,6 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 import TaskItem, { Task as TaskType } from '../../components/TaskItem';
+import TaskInput from '../../components/TaskInput';
 
 interface Task {
   id: string;
@@ -22,8 +23,12 @@ interface Task {
 }
 
 export default function TasksScreen() {
+  
+  // the list of tasks
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [newTask, setNewTask] = useState('');
+ 
+  // the id of the task to delete
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const addTask = () => {
@@ -70,26 +75,13 @@ export default function TasksScreen() {
           <Text style={{ color: '#64748b', fontSize: 15, marginTop: 2 }}>by Noeman for Chapterone task.</Text>
         </View>
 
-        <Card style={styles.inputCard}>
-          <Card.Content>
-            <TextInput
-              label="Add new task"
-              value={newTask}
-              onChangeText={setNewTask}
-              mode="outlined"
-              style={styles.input}
-              onSubmitEditing={addTask}
-            />
-            <Button
-              mode="contained"
-              onPress={addTask}
-              style={styles.addButton}
-              disabled={!newTask.trim()}
-            >
-              Add Task
-            </Button>
-          </Card.Content>
-        </Card>
+        {/* Task input comp */}
+        <TaskInput
+          value={newTask}
+          onChange={setNewTask}
+          onAdd={addTask}
+          disabled={!newTask.trim()}
+        />
 
         <ScrollView style={styles.taskList}>
           {tasks.length === 0 ? (
