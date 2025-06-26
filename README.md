@@ -1,9 +1,7 @@
 # Task Manager App – Chapter One  
 By Noeman
 
-Simple task manager built with **React Native + Expo** as part of the Chapter One tech screen. The app is fully functional and written in clean, modular code.
-
-
+Simple task manager built with React Native
 
 ## ✨ Features
 
